@@ -10,8 +10,33 @@ permissions:
 
 jobs:
   update-progress:
+    if: "!contains(github.event.head_commit.message, '[skip progress]')"
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate progress update
+        run: python3 scripts/update-progress.py
+
+      - name: Commit README progress
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "No README progress changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+          git commit -m "docs: update project progress [skip progress]"
+          git push
