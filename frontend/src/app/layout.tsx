@@ -1,3 +1,4 @@
+import { AuthProvider } from "@descope/nextjs-sdk";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -18,12 +19,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const projectId = process.env.NEXT_PUBLIC_DESCOPE_PROJECT_ID ?? "";
+
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
-    </html>
+    <AuthProvider projectId={projectId}>
+      <html
+        lang="en"
+        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      >
+        <body className="min-h-full flex flex-col">{children}</body>
+      </html>
+    </AuthProvider>
   );
 }

@@ -1,6 +1,7 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
+import { getPool } from "./db/pool.js";
 
 const app = express();
 const port = Number(process.env.PORT) || 4000;
@@ -17,13 +18,15 @@ app.use(
 
 app.use(express.json());
 
-app.get("/health", (_req, res) => {
+app.get("/health", async (_req, res) => {
   try {
-    res.json({ status: "ok", service: "meetpilot-app" });
+    await getPool().query("SELECT 1");
+    res.json({ status: "ok", service: "meetpilot-app", database: "up" });
   } catch {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
+    res.status(503).json({
+      status: "error",
+      service: "meetpilot-app",
+      database: "down",
     });
   }
 });
