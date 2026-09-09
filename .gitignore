@@ -1,2 +1,21 @@
+# Python
 __pycache__/
 *.py[cod]
+
+# Node dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+
+# OS files
+.DS_Store
